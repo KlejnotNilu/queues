@@ -2,16 +2,17 @@ package princeton.queues;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Queue;
 
 import edu.princeton.cs.introcs.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
-    private Item[] Queue; // queue implemented on array due to randomized iterator
-    private int N; // size of array, not really necessary
+    private Item[] queue; // queue implemented on array due to randomized iterator
+    private int n; /// / size of array, not really necessary
 
     public RandomizedQueue() {
-        Queue = (Item[]) new Object[1]; // generic array
+        queue = (Item[]) new Object[1]; // generic array
     }
 
 
@@ -24,35 +25,42 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         private boolean[] ifReturned;
 
         {
-            ifReturned = new boolean[N];
+            ifReturned = new boolean[n];
         }
 
         public void remove() {
+
             throw new UnsupportedOperationException();
         }
 
         public boolean hasNext() {
+
             return checkArray();
         }
 
         public Item next() {
+
             if (hasNext() == false)
-                throw new UnsupportedOperationException();
+                throw new NoSuchElementException();
             int index;
+
             do {
                 index = StdRandom.uniform(ifReturned.length);
-                // System.out.println(index);
-                if (ifReturned[index] == false) { // random search for item to return
+
+                if (!ifReturned[index]) { // random search for item to return
                     ifReturned[index] = true;
                     break;
                 }
+
             } while (true);
-            return Queue[index];
+
+            return queue[index];
         }
 
         private boolean checkArray() { // check if there are items to return in iterator. one item in array can be returned only once
+
             for (boolean c : ifReturned) {
-                if (c == false) {
+                if (!c) {
                     return true;
                 }
             }
@@ -62,41 +70,55 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public boolean isEmpty() {
-        return N == 0;
+
+        return n == 0;
     }
 
     public int size() {
-        return N;
+
+        return n;
     }
 
     public void enqueue(Item item) {
-        if (item == null)
+        if (item == null) {
             throw new NullPointerException();
-        if (N == Queue.length) // resize array when it is full
-            resize(2 * Queue.length);
-        Queue[N++] = item;
+        }
+        if (n == queue.length) { // resize array when it is full
+            resize(2 * queue.length);
+        }
+        queue[n++] = item;
     }
 
     public Item dequeue() {
-        if (N == 0)
+        if (n == 0) {
             throw new NoSuchElementException();
-        Item toReturn = Queue[--N];
-        Queue[N] = null;
-        if (N > 0 && N == Queue.length / 4) //reduce array when items take 25% of array's size
-            resize(Queue.length / 2);
+        }
+        int index = StdRandom.uniform(n);
+
+        Item toReturn = queue[index];
+
+        queue[index] = queue[n - 1];
+
+        queue[n - 1] = null;
+
+        n--;
+
+        if (n > 0 && n == queue.length / 4) //reduce array when items take 25% of array's size
+            resize(queue.length / 2);
         return toReturn;
     }
 
     public Item sample() {
-        return Queue[StdRandom.uniform(N)]; // return random item from array
+        if (n == 0) {
+            throw new NoSuchElementException();
+        }
+        return queue[StdRandom.uniform(n)]; // return random item from array
     }
 
     private void resize(int length) {
         Item[] copy = (Item[]) new Object[length];
-        for (int i = 0; i < N; i++) {
-            copy[i] = Queue[i];
-        }
-        Queue = copy;
+        System.arraycopy(queue, 0, copy, 0, n);
+        queue = copy;
     }
 
 }
