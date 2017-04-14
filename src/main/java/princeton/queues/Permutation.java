@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.Iterator;
 import java.util.Scanner;
 
-import edu.princeton.cs.introcs.StdIn;
-
 public class Permutation {
 
     public static void main(String[] args) { // this program uses command argument
@@ -14,11 +12,7 @@ public class Permutation {
 
         RandomizedQueue<String> test = new RandomizedQueue<String>();
 
-        //String[] toCopy = StdIn.readStrings();
-
-        // File file = new File("");
-
-        String nameOfFile = "permutation6.txt"; // pass there the name of file from resources folder
+        String nameOfFile = "permutation10.txt"; // pass there the name of file from resources folder
 
         if(nameOfFile.charAt(0) != '/') {
             nameOfFile = "/" + nameOfFile;
